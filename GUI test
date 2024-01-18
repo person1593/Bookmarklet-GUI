@@ -1,0 +1,50 @@
+javascript:(function() {
+  // Customize this: How do you want to store and retrieve bookmarklet data?
+  const bookmarkletData = [
+    { name: "Bookmarklet 1", code: "javascript:function gcloak() { var link = document.querySelector("link[rel*='icon']") || document.createElement('link');link.type = 'image/x-icon';link.rel = 'shortcut icon';link.href = 'https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_5.ico';document.title = 'My Drive - Google Drive';console.log(document.title);document.getElementsByTagName('head')[0].appendChild(link) };gcloak();setInterval(gcloak, 1000);" },
+    { name: "Bookmarklet 2", code: "javascript:window.onbeforeunload = function() { return "Do your want to close"; }; alert("Tab Secured");" },
+    // Add more bookmarklets here
+  ];
+
+  // Create the UI elements
+  const container = document.createElement('div');
+  const header = document.createElement('h2');
+  const list = document.createElement('ul');
+  const button = document.createElement('button');
+
+  header.textContent = "Run Bookmarklets";
+  button.textContent = "Run!";
+
+  // Populate the list with bookmarklets
+  bookmarkletData.forEach(function(bookmarklet) {
+    const item = document.createElement('li');
+    item.textContent = bookmarklet.name;
+    item.addEventListener('click', function() {
+      selectedCode = bookmarklet.code;
+    });
+    list.appendChild(item);
+  });
+
+  // Bind click event to the "Run!" button
+  button.addEventListener('click', function() {
+    if (selectedCode) {
+      // Consider security measures before running external code!
+      // Option 1: Inject code as a new script element
+      const script = document.createElement('script');
+      script.textContent = selectedCode;
+      document.body.appendChild(script);
+      script.remove(); // Remove after execution
+      // Option 2: Use window.location.href to trigger a bookmarklet URL
+      // window.location.href = selectedCode;
+      selectedCode = null; // Reset for next use
+    }
+  });
+
+  // Assemble the UI
+  container.appendChild(header);
+  container.appendChild(list);
+  container.appendChild(button);
+
+  // Customize placement (e.g., for a popup-like experience)
+  document.body.appendChild(container);
+})();
