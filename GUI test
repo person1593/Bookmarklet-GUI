@@ -41,19 +41,18 @@ javascript:(function() {
   title.style.marginBottom = '10px';
   container.appendChild(title);
 
-  // Create three buttons
-  for (var i = 1; i <= 3; i++) {
+  // Create Buttons 1, 2, 3, and 4 with rounded corners
+  for (var i = 1; i <= 4; i++) {
     var button = document.createElement('button');
     button.textContent = 'Button ' + i;
     button.style.display = 'block';
     button.style.marginBottom = '5px';
+    button.style.width = '100px';
+    button.style.height = '50px';
+    button.style.background = 'limegreen';
+    button.style.borderRadius = '10px'; // Rounded corners
 
     if (i === 1) {
-      // Make Button 1 bigger and lime green
-      button.style.width = '100px';
-      button.style.height = '50px';
-      button.style.background = 'limegreen';
-
       button.addEventListener('click', function() {
         document.body.style.backgroundColor = 'yellow';
       });
@@ -63,28 +62,19 @@ javascript:(function() {
         alert('Button clicked!');
       });
     }
+
     container.appendChild(button);
   }
 
-  // Create Button 4
-  var button4 = document.createElement('button');
-  button4.textContent = 'Button 4';
-  button4.style.display = 'block';
-  button4.style.marginBottom = '5px';
-  button4.addEventListener('click', function() {
-    // Run the specified code on Button 4 click
-    window.onbeforeunload = function() {
-      return 'Do you want to close';
-    };
-    alert('Tab Secured');
-  });
-  container.appendChild(button4);
-
-  // Create close button
+  // Create close button with rounded corners
   var closeButton = document.createElement('button');
   closeButton.textContent = 'Close';
   closeButton.style.display = 'block';
-  closeButton.style.marginTop = '10px';
+  closeButton.style.marginTop = '5px';
+  closeButton.style.width = '100px';
+  closeButton.style.height = '50px';
+  closeButton.style.background = 'limegreen';
+  closeButton.style.borderRadius = '10px'; // Rounded corners
   closeButton.addEventListener('click', function() {
     document.body.removeChild(container);
   });
