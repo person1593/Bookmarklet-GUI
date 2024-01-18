@@ -1,50 +1,95 @@
 javascript:(function() {
-  // Customize this: How do you want to store and retrieve bookmarklet data?
-  const bookmarkletData = [
-    { name: "Bookmarklet 1", code: "javascript:function gcloak() { var link = document.querySelector("link[rel*='icon']") || document.createElement('link');link.type = 'image/x-icon';link.rel = 'shortcut icon';link.href = 'https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_5.ico';document.title = 'My Drive - Google Drive';console.log(document.title);document.getElementsByTagName('head')[0].appendChild(link) };gcloak();setInterval(gcloak, 1000);" },
-    { name: "Bookmarklet 2", code: "javascript:window.onbeforeunload = function() { return "Do your want to close"; }; alert("Tab Secured");" },
-    // Add more bookmarklets here
-  ];
+  // Create the main container
+  var container = document.createElement('div');
+  container.style.position = 'fixed';
+  container.style.top = '50%';
+  container.style.left = '50%';
+  container.style.transform = 'translate(-50%, -50%)';
+  container.style.border = '1px solid #000';
+  container.style.padding = '10px';
+  container.style.background = '#fff';
+  container.style.zIndex = '9999';
+  container.style.cursor = 'move';
 
-  // Create the UI elements
-  const container = document.createElement('div');
-  const header = document.createElement('h2');
-  const list = document.createElement('ul');
-  const button = document.createElement('button');
+  var isDragging = false;
+  var offsetX, offsetY;
 
-  header.textContent = "Run Bookmarklets";
-  button.textContent = "Run!";
-
-  // Populate the list with bookmarklets
-  bookmarkletData.forEach(function(bookmarklet) {
-    const item = document.createElement('li');
-    item.textContent = bookmarklet.name;
-    item.addEventListener('click', function() {
-      selectedCode = bookmarklet.code;
-    });
-    list.appendChild(item);
+  // Make the container draggable
+  container.draggable = true;
+  container.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    offsetX = e.clientX - container.getBoundingClientRect().left;
+    offsetY = e.clientY - container.getBoundingClientRect().top;
   });
 
-  // Bind click event to the "Run!" button
-  button.addEventListener('click', function() {
-    if (selectedCode) {
-      // Consider security measures before running external code!
-      // Option 1: Inject code as a new script element
-      const script = document.createElement('script');
-      script.textContent = selectedCode;
-      document.body.appendChild(script);
-      script.remove(); // Remove after execution
-      // Option 2: Use window.location.href to trigger a bookmarklet URL
-      // window.location.href = selectedCode;
-      selectedCode = null; // Reset for next use
+  document.addEventListener('mousemove', function(e) {
+    if (isDragging) {
+      container.style.left = e.clientX - offsetX + 'px';
+      container.style.top = e.clientY - offsetY + 'px';
     }
   });
 
-  // Assemble the UI
-  container.appendChild(header);
-  container.appendChild(list);
-  container.appendChild(button);
+  document.addEventListener('mouseup', function() {
+    isDragging = false;
+  });
 
-  // Customize placement (e.g., for a popup-like experience)
+  // Create title
+  var title = document.createElement('div');
+  title.textContent = 'TrenettoGUI';
+  title.style.fontSize = '20px';
+  title.style.fontWeight = 'bold';
+  title.style.marginBottom = '10px';
+  container.appendChild(title);
+
+  // Create three buttons
+  for (var i = 1; i <= 3; i++) {
+    var button = document.createElement('button');
+    button.textContent = 'Button ' + i;
+    button.style.display = 'block';
+    button.style.marginBottom = '5px';
+
+    if (i === 1) {
+      // Make Button 1 bigger and lime green
+      button.style.width = '100px';
+      button.style.height = '50px';
+      button.style.background = 'limegreen';
+
+      button.addEventListener('click', function() {
+        document.body.style.backgroundColor = 'yellow';
+      });
+    } else {
+      // For other buttons, show an alert on click
+      button.addEventListener('click', function() {
+        alert('Button clicked!');
+      });
+    }
+    container.appendChild(button);
+  }
+
+  // Create Button 4
+  var button4 = document.createElement('button');
+  button4.textContent = 'Button 4';
+  button4.style.display = 'block';
+  button4.style.marginBottom = '5px';
+  button4.addEventListener('click', function() {
+    // Run the specified code on Button 4 click
+    window.onbeforeunload = function() {
+      return 'Do you want to close';
+    };
+    alert('Tab Secured');
+  });
+  container.appendChild(button4);
+
+  // Create close button
+  var closeButton = document.createElement('button');
+  closeButton.textContent = 'Close';
+  closeButton.style.display = 'block';
+  closeButton.style.marginTop = '10px';
+  closeButton.addEventListener('click', function() {
+    document.body.removeChild(container);
+  });
+  container.appendChild(closeButton);
+
+  // Append the container to the body
   document.body.appendChild(container);
 })();
