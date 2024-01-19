@@ -1,84 +1,258 @@
-javascript:(function() {
+(function () {
   // Create the main container
   var container = document.createElement('div');
   container.style.position = 'fixed';
   container.style.top = '50%';
   container.style.left = '50%';
   container.style.transform = 'translate(-50%, -50%)';
-  container.style.border = '1px solid #000';
-  container.style.padding = '10px';
-  container.style.background = '#fff';
+  container.style.width = '300px'; // Set width to 300px
+  container.style.height = '400px'; // Set height to 400px
+  container.style.border = '3px solid #000';
+  container.style.background = 'lightblue'; // Change background color to a nice blue
   container.style.zIndex = '9999';
-  container.style.cursor = 'move';
+  container.style.borderRadius = '10px'; // Rounded corners
+  container.style.display = 'flex'; // Use flexbox for layout
+  container.style.overflow = 'hidden'; // Hide overflow
+  container.style.cursor = 'move'; // Make the container draggable
 
   var isDragging = false;
   var offsetX, offsetY;
 
-  // Make the container draggable
-  container.draggable = true;
-  container.addEventListener('mousedown', function(e) {
+  container.addEventListener('mousedown', function (e) {
     isDragging = true;
     offsetX = e.clientX - container.getBoundingClientRect().left;
     offsetY = e.clientY - container.getBoundingClientRect().top;
+
+    document.addEventListener('mousemove', dragMove);
+    document.addEventListener('mouseup', dragEnd);
   });
 
-  document.addEventListener('mousemove', function(e) {
+  function dragMove(e) {
     if (isDragging) {
-      container.style.left = e.clientX - offsetX + 'px';
-      container.style.top = e.clientY - offsetY + 'px';
-    }
-  });
+      var x = e.clientX - offsetX;
+      var y = e.clientY - offsetY;
 
-  document.addEventListener('mouseup', function() {
+      container.style.left = x + 'px';
+      container.style.top = y + 'px';
+    }
+  }
+
+  function dragEnd() {
     isDragging = false;
-  });
+    document.removeEventListener('mousemove', dragMove);
+    document.removeEventListener('mouseup', dragEnd);
+  }
+
+  // Create sidebar for screen navigation
+  var sidebar = document.createElement('div');
+  sidebar.style.width = '100px';
+  sidebar.style.height = '100%';
+  sidebar.style.background = '#1E90FF'; // Darker blue color
+  sidebar.style.borderRadius = '10px 0 0 10px'; // Rounded left corners
+  sidebar.style.display = 'flex';
+  sidebar.style.flexDirection = 'column';
+  sidebar.style.alignItems = 'center';
+
+  // Create screen buttons in the sidebar
+  var screens = [];
+  var screenLabels = ['Global', 'Hacks'];
+  for (var j = 0; j < 2; j++) {
+    var screenButton = document.createElement('button');
+    screenButton.textContent = screenLabels[j];
+    screenButton.style.width = '80px';
+    screenButton.style.marginTop = '10px';
+    screenButton.style.backgroundColor = 'transparent';
+    screenButton.style.color = 'white'; // White text color
+    screenButton.style.border = 'none'; // Remove border
+    screenButton.style.cursor = 'pointer';
+    screenButton.style.fontFamily = 'Arial, sans-serif'; // Improved font style
+
+    // Function to switch to the selected screen
+    screenButton.addEventListener('click', function (index) {
+      return function () {
+        switchScreen(index);
+      };
+    }(j));
+
+    sidebar.appendChild(screenButton);
+  }
+
+  container.appendChild(sidebar);
+
+  // Create content container
+  var contentContainer = document.createElement('div');
+  contentContainer.style.flex = '1'; // Take remaining space
+  contentContainer.style.padding = '10px';
+  contentContainer.style.display = 'flex';
+  contentContainer.style.flexDirection = 'column';
+  contentContainer.style.justifyContent = 'center'; // Center content vertically
+  container.appendChild(contentContainer);
 
   // Create title
   var title = document.createElement('div');
-  title.textContent = 'TrenettoGUI';
-  title.style.fontSize = '20px';
+  title.textContent = 'NebulaGUI';
+  title.style.fontSize = '24px'; // Increase font size
   title.style.fontWeight = 'bold';
-  title.style.marginBottom = '10px';
-  container.appendChild(title);
+  title.style.textAlign = 'center'; // Center text
+  title.style.marginBottom = '20px'; // Add margin
+  contentContainer.appendChild(title);
 
-  // Create Buttons 1, 2, 3, and 4 with rounded corners
-  for (var i = 1; i <= 4; i++) {
-    var button = document.createElement('button');
-    button.textContent = 'Button ' + i;
-    button.style.display = 'block';
-    button.style.marginBottom = '5px';
-    button.style.width = '100px';
-    button.style.height = '50px';
-    button.style.background = 'limegreen';
-    button.style.borderRadius = '10px'; // Rounded corners
+  // Create screens with buttons and titles
+  for (var i = 0; i < 2; i++) {
+    var screen = document.createElement('div');
+    screen.style.display = 'none';
 
-    if (i === 1) {
-      button.addEventListener('click', function() {
-        document.body.style.backgroundColor = 'yellow';
-      });
-    } else {
-      // For other buttons, show an alert on click
-      button.addEventListener('click', function() {
-        alert('Button clicked!');
-      });
+    // Create title for the screen
+    var screenTitle = document.createElement('div');
+    screenTitle.textContent = screenLabels[i];
+    screenTitle.style.fontSize = '18px'; // Adjust font size for title
+    screenTitle.style.fontWeight = 'bold';
+    screenTitle.style.textAlign = 'center'; // Center text
+    screenTitle.style.marginBottom = '10px';
+    screen.appendChild(screenTitle);
+
+    // Create buttons for the screen
+    for (var j = 1; j <= (i === 0 ? 4 : 2); j++) {
+      var button = document.createElement('button');
+      button.textContent = (i === 1 && j === 1) ? 'Blooket' : 'Button ' + j;
+      button.style.display = 'block';
+      button.style.marginBottom = '5px';
+      button.style.width = '100px';
+      button.style.height = '30px';
+      button.style.backgroundColor = '#1E90FF'; // Darker blue color
+      button.style.color = 'white'; // White text color
+      button.style.border = 'none'; // Remove border
+      button.style.borderRadius = '5px'; // Add border radius
+      button.style.fontFamily = 'Arial, sans-serif'; // Improved font style
+
+      button.addEventListener('click', function (i, j) {
+        return function () {
+          if (i === 0 && j === 1) {
+            // Button 1 on Global screen turns the entire webpage yellow
+            document.body.style.background = 'yellow';
+          } else if (i === 1 && j === 1) {
+            // Button 1 on Hacks screen runs the Blooket code
+            var script = document.createElement('script');
+            script.src = 'https://raw.githubusercontent.com/05Konz/Blooket-Cheats/main/cheats/gui.js';
+            document.body.appendChild(script);
+          } else if (i === 1 && j === 5) {
+            // Button 5 on Hacks screen executes the provided code
+            function gcloak() {
+              const a = document.createElement('div');
+              a.style.position = 'fixed';
+              a.style.top = '5%';
+              a.style.left = '50%';
+              a.style.transform = 'translate(-50%, 0%';
+              a.style.fontSize = '5rem';
+              a.style.backgroundColor = '#3a3aff';
+              a.style.color = '#ee0000';
+              a.style.border = '10px solid #ee0000';
+              a.style.zIndex = '9999';
+              a.style.lineHeight = 'normal';
+              a.style.cursor = 'not-allowed';
+              a.style.userSelect = 'none';
+              a.textContent = 'YOU ARE BEING HACKED :)';
+              document.body.appendChild(a);
+              const b = ['overline', 'line-through', 'blink', 'underline'];
+              let c = 0;
+              setInterval(() => {
+                a.style.textDecorationLine = b[c];
+                const d = a.style.backgroundColor;
+                a.style.backgroundColor = a.style.color;
+                a.style.color = d;
+                a.style.borderColor = d;
+                if (c < b.length - 1) c++;
+                else c = 0;
+              }, 100);
+            }
+            gcloak();
+          } else {
+            // For other buttons, display an alert
+            alert('Button clicked on current screen!');
+          }
+        };
+      }(i, j));
+
+      screen.appendChild(button);
     }
 
-    container.appendChild(button);
+    // For Hacks screen, add a dropdown menu with Button 7
+    if (i === 1) {
+      var dropdownButton = document.createElement('button');
+      dropdownButton.textContent = 'More';
+      dropdownButton.style.width = '100px';
+      dropdownButton.style.height = '30px';
+      dropdownButton.style.backgroundColor = '#1E90FF'; // Darker blue color
+      dropdownButton.style.color = 'white'; // White text color
+      dropdownButton.style.border = 'none'; // Remove border
+      dropdownButton.style.borderRadius = '5px'; // Add border radius
+      dropdownButton.style.fontFamily = 'Arial, sans-serif'; // Improved font style
+      dropdownButton.addEventListener('click', function () {
+        var dropdownContent = document.getElementById('dropdownContent');
+        dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' : 'block';
+      });
+      screen.appendChild(dropdownButton);
+
+      var dropdownContent = document.createElement('div');
+      dropdownContent.id = 'dropdownContent';
+      dropdownContent.style.display = 'none';
+      dropdownContent.style.position = 'absolute';
+      dropdownContent.style.backgroundColor = '#f9f9f9';
+      dropdownContent.style.minWidth = '160px';
+      dropdownContent.style.boxShadow = '0px 8px 16px 0px rgba(0,0,0,0.2)';
+      dropdownContent.style.zIndex = '1';
+      screen.appendChild(dropdownContent);
+
+      var dropdownButton7 = document.createElement('button');
+      dropdownButton7.textContent = 'Button 7';
+      dropdownButton7.style.width = '100%';
+      dropdownButton7.style.height = '30px';
+      dropdownButton7.style.backgroundColor = '#1E90FF'; // Darker blue color
+      dropdownButton7.style.color = 'white'; // White text color
+      dropdownButton7.style.border = 'none'; // Remove border
+      dropdownButton7.style.borderRadius = '5px'; // Add border radius
+      dropdownButton7.style.fontFamily = 'Arial, sans-serif'; // Improved font style
+      dropdownButton7.addEventListener('click', function () {
+        alert('Button 7 clicked!');
+      });
+      dropdownContent.appendChild(dropdownButton7);
+    }
+
+    screens.push(screen);
+    contentContainer.appendChild(screen);
   }
 
-  // Create close button with rounded corners
+  // Show the first screen initially
+  switchScreen(0);
+
+  // Create close button
   var closeButton = document.createElement('button');
   closeButton.textContent = 'Close';
-  closeButton.style.display = 'block';
-  closeButton.style.marginTop = '5px';
-  closeButton.style.width = '100px';
-  closeButton.style.height = '50px';
-  closeButton.style.background = 'limegreen';
-  closeButton.style.borderRadius = '10px'; // Rounded corners
-  closeButton.addEventListener('click', function() {
+  closeButton.style.width = '80px';
+  closeButton.style.marginTop = '10px';
+  closeButton.style.backgroundColor = '#1E90FF'; // Darker blue color
+  closeButton.style.color = 'white'; // White text color
+  closeButton.style.border = 'none'; // Remove border
+  closeButton.style.borderRadius = '5px'; // Add border radius
+  closeButton.style.fontFamily = 'Arial, sans-serif'; // Improved font style
+  closeButton.addEventListener('click', function () {
     document.body.removeChild(container);
   });
-  container.appendChild(closeButton);
+  contentContainer.appendChild(closeButton);
+
+  // Function to switch to the specified screen
+  function switchScreen(index) {
+    // Hide all screens
+    screens.forEach(function (screen) {
+      screen.style.display = 'none';
+    });
+
+    // Show the selected screen
+    screens[index].style.display = 'block';
+
+    // Reset background color on screen switch
+    document.body.style.background = '';
+  }
 
   // Append the container to the body
   document.body.appendChild(container);
